@@ -63,14 +63,6 @@
         android:layout_toLeftOf="@+id/toChannel"
         android:layout_toStartOf="@+id/toChannel" />
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -102,7 +94,8 @@
         android:id="@+id/helloText"
         android:layout_below="@+id/fmRSSIlabel"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textSize="18sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -126,5 +119,10 @@
         android:layout_toLeftOf="@+id/toRSSI"
         android:layout_toStartOf="@+id/toRSSI" />
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

@@ -4,10 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+
+import android.content.pm.PackageManager;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -176,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
         myFmRSSIview    = (TextView) findViewById(R.id.fmRSSI);
 
 
-
         String line = "";//"Successful Handoff to 84b2.617e.be76(Channel:44 Score:451 RSSI:-49 dBm Penalty:0) from 84b2.617e.6756(Channel:40 Score:439 RSSI:-61 dBm Penalty:0), Reason 153, Other Aps: 84b2.617e.be76 (Channel:44 Score:451 RSSI:-49 dBm Penalty:0 Reason:140), 84b2.6189.56e6 (Channel:157 Score:442 RSSI:-58 dBm Penalty:0 Reason:140), 84b2.618d.fd96 (Channel:161 Score:432 RSSI:-68 dBm Penalty:0 Reason:140), 84b2.6194.bcd6 (Channel:149 Score:427 RSSI:-73 dBm Penalty:0 Reason:140), TxPO:15 dBm, TxPN:15 dBm";
         // check for co-channel interference
         try {
@@ -224,5 +226,16 @@ public class MainActivity extends AppCompatActivity {
 
         char[] oR = intToCharA( oldRSSI );
         myFmRSSIview.setText(oR, 0, oR.length);
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName;
+
+            this.setTitle( this.getTitle() + " " + version );
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
