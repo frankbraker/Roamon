@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,10 +26,11 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     static public TextView myTview;
-    static public TextView myToCHview;
-    static public TextView myFmCHview;
-    static public TextView myToRSSIview;
-    static public TextView myFmRSSIview;
+    static public TextView myTview2;
+    static public TextView myTview3;
+    static public TextView myTview4;
+    static public TextView myTviewFooter;
+    static public ImageView myIview;
 
     static public CustomAdapter customAdapter;
 
@@ -39,12 +41,39 @@ public class MainActivity extends AppCompatActivity {
     private int oldRSSI=0;
     private int newRSSI=0;
 
-    //private int count = 0;
-    private boolean frozen  =   false;
+    private int alt1CH=0;
+    private int alt1RSSI=0;
+    private int alt2CH=0;
+    private int alt2RSSI=0;
 
-    // model data, an array of strings
-    //private String[]  aLogs =   new String[] { "testString 1", "testString 2"};
-    //private ArrayList<String> aLogs =   new ArrayList<String>();
+    private boolean frozen  =   false;
+    private boolean whiteScreen =   true;
+
+    public int str2Int(String strSource, char delimiter)    {
+        return ( Integer.parseInt(strSource.substring(0,strSource.indexOf(delimiter))));
+    }
+    public String searchNthAfterTarget (String strSource, String strTarget, String strAfter, int countOfAfters)  {
+
+        String retStr   =   strSource;
+        int start       =   0;
+
+        // return to end of strSource begging at strTarget which occurs after countOfAfters occurances of strAfter
+        for (int i=0; i<countOfAfters; i++) {
+            start       =   retStr.indexOf(strAfter) + strAfter.length();
+            retStr      =   retStr.substring(start);
+        }
+        start           =   retStr.indexOf(strTarget)+strTarget.length();
+        retStr          =   retStr.substring(start);
+
+        return retStr;
+    }
+    public int intSearchNthAfterTarget (String strSource, String strTarget, String strAfter, int countOfAfters) {
+        return str2Int( searchNthAfterTarget ( strSource, strTarget, strAfter, countOfAfters ), ' ');
+    }
+
+    public boolean isDFSchannel( int ch )   {
+        return ( ch == 52 || ch == 56 || ch == 60 || ch == 64 || ch == 100 || ch == 104 || ch == 108 || ch == 112 || ch == 116 || ch == 120 || ch == 124 || ch == 128 || ch == 132 || ch == 140 );
+    }
 
     public class LogEntry {
         public String rawLog;
@@ -59,91 +88,77 @@ public class MainActivity extends AppCompatActivity {
         public String APalt2RSSI;
 
         public String faultCoChannelInterference;
+        public String faultDFS;
+
         public boolean anyFault;
+        public boolean DFSfault;
+        public boolean CCIfault;
 
         public LogEntry (String rawLog) {
             this.rawLog =   rawLog;
             this.anyFault   =   false;
+            this.DFSfault   =   false;
+            this.CCIfault   =   false;
 
 
-            //this.toCH   =   "000";
-            //this.fmCH   =   "000";
-            //this.toRSSI   =   "-40";
-            //this.fmRSSI   =   "-75";
             this.APalt1CH   =   "999";
             this.APalt1RSSI =   "-99";
             this.APalt2CH   =   "999";
             this.APalt2RSSI =   "-99";
-            //this.faultCoChannelInterference =   false;
-
-            //char[]  t   =   new char[rawLog.length()];
-            //for(int i=0; i< rawLog.length(); i++) {
-            //    t[i] =   rawLog.charAt(i);
-            //}
-            //MainActivity.myTview.setText(t, 0, t.length);
 
             //line = "Successful Handoff to 84b2.617e.be76(Channel:44 Score:451 RSSI:-49 dBm Penalty:0) from 84b2.617e.6756(Channel:40 Score:439 RSSI:-61 dBm Penalty:0), Reason 153, Other Aps: 84b2.617e.be76 (Channel:44 Score:451 RSSI:-49 dBm Penalty:0 Reason:140), 84b2.6189.56e6 (Channel:157 Score:442 RSSI:-58 dBm Penalty:0 Reason:140), 84b2.618d.fd96 (Channel:161 Score:432 RSSI:-68 dBm Penalty:0 Reason:140), 84b2.6194.bcd6 (Channel:149 Score:427 RSSI:-73 dBm Penalty:0 Reason:140), TxPO:15 dBm, TxPN:15 dBm";
             // check for co-channel interference
             try {
-                String newTarget = "Channel:";
-                int start = rawLog.indexOf(newTarget) + newTarget.length();
-                int end = start + 9;
-                CharSequence csChannel = rawLog.subSequence(start, end);
-                newChannel = Integer.parseInt(csChannel.subSequence(0, csChannel.toString().indexOf(" ")).toString());
+                newChannel  =   intSearchNthAfterTarget( rawLog, "Channel:", "", 0);
+                newRSSI     =   intSearchNthAfterTarget( rawLog, "RSSI:", "", 0);
+                oldChannel  =   intSearchNthAfterTarget( rawLog, "Channel:", "from", 1);
+                oldRSSI     =   intSearchNthAfterTarget( rawLog, "RSSI:", "from", 1);
+                String strAPalt1    =   searchNthAfterTarget( rawLog, "Channel:", "Other Aps:", 1);
 
-                String RSSITarget = "RSSI:";
-                start = rawLog.indexOf(RSSITarget) + RSSITarget.length();
-                end = start + 9;
-                CharSequence csRSSI = rawLog.subSequence(start,end);
-                newRSSI =   Integer.parseInt(csRSSI.subSequence(0, csRSSI.toString().indexOf(" ")).toString());
+                alt1CH              =   intSearchNthAfterTarget( strAPalt1, "Channel:", "", 0);
+                this.APalt1CH       =   Integer.toString( alt1CH );
 
-                String midTarget = "from";
-                String midEndTarget = "Reason";
-                start = rawLog.indexOf(midTarget) + midTarget.length();
-                end = rawLog.indexOf(midEndTarget);
-                CharSequence mid = rawLog.subSequence(start, end);
+                alt1RSSI            =   intSearchNthAfterTarget( strAPalt1, "RSSI:", "Channel:", 1);
+                this.APalt1RSSI     =   Integer.toString( alt1RSSI );
 
-                String oldTarget = newTarget;
-                start = mid.toString().indexOf(oldTarget) + oldTarget.length();
-                end = start + 9;
-                csChannel = mid.subSequence(start, end);
-                oldChannel = Integer.parseInt(csChannel.subSequence(0, csChannel.toString().indexOf(" ")).toString());
+                alt2CH              =   intSearchNthAfterTarget( strAPalt1, "Channel:", "Channel:", 1);
+                this.APalt2CH       =   Integer.toString( alt2CH );
 
-                start = mid.toString().indexOf(RSSITarget) + RSSITarget.length();
-                end = start + 9;
-                csRSSI = mid.toString().subSequence(start,end);
-                oldRSSI =   Integer.parseInt(csRSSI.subSequence(0, csRSSI.toString().indexOf(" ")).toString());
+                alt2RSSI            =   intSearchNthAfterTarget( strAPalt1, "RSSI:", "Channel:", 2);
+                this.APalt2RSSI     =   Integer.toString( alt2RSSI );
 
             } catch (Exception e) {
                 // no problem!
             }
 
 
-            //char[] n = intToCharA(newChannel);// {(char) ('0' + (newChannel / 100) % 10), (char) ('0' + (newChannel / 10) % 10), (char) ('0' + newChannel % 10), ' '};
-            //char[] o = intToCharA(oldChannel);// {(char) ('0' + (oldChannel / 100) % 10), (char) ('0' + (oldChannel / 10) % 10), (char) ('0' + oldChannel % 10), ' '};
             this.toCH   =   Integer.toString(newChannel);
             this.fmCH   =   Integer.toString(oldChannel);
+
+            // test
+            //newChannel = oldChannel;
+            //alt1CH      =   60;
+            //alt1RSSI    =   -40;
 
             if (oldChannel == newChannel) {
                 this.faultCoChannelInterference =   "YES";
                 this.anyFault   =   true;
-                //MainActivity.myToCHview.setBackgroundColor(Color.RED);
-                //MainActivity.myFmCHview.setBackgroundColor(Color.RED);
-                //frozen=true;
+                this.CCIfault   =   true;
             } else {
                 this.faultCoChannelInterference =   "NO";
-                //MainActivity.myToCHview.setBackgroundColor(Color.GREEN);
-                //MainActivity.myFmCHview.setBackgroundColor(Color.GREEN);
             }
 
-            //char[] oR = intToCharA( oldRSSI );
             this.fmRSSI =   Integer.toString(oldRSSI);
-            //myFmRSSIview.setText(oR, 0, oR.length);
-
-            //char[] nR = intToCharA( newRSSI );
             this.toRSSI =   Integer.toString( newRSSI );
-            //myToRSSIview.setText(nR, 0, nR.length);
 
+            // is alt1 a DFS channel?  Does it have a higher RSSI than chosen?  Then we have a DFS fault!
+            if ( isDFSchannel( alt1CH ) && ( alt1RSSI > newRSSI )  )   {
+                this.faultDFS   =   "YES";
+                this.anyFault   =   true;
+                this.DFSfault   =   true;
+            } else {
+                this.faultDFS   =   "NO";
+            }
         }
     }
     private ArrayList<LogEntry> aLogs = new ArrayList<LogEntry>();
@@ -154,8 +169,6 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             if (frozen)
                 return;
-
-            //++count;
 
             // extras for android.net.conn.CONNECTIVITY_CHANGE:
             // networkInfo
@@ -180,74 +193,19 @@ public class MainActivity extends AppCompatActivity {
                     if (! line.contains("Successful Handoff"))
                         break;
 
+                    if ( whiteScreen ) {
+                        whiteScreen =   false;
+                        myTview.setText("");
+                        myTview2.setText("");
+                        myTview3.setText("");
+                        myTview4.setText("");
+                        myTviewFooter.setText("");
+                        myIview.setImageBitmap(null);
+                    }
+
                     LogEntry newLog = new LogEntry(line);
                     customAdapter.add(newLog);
 
-                    /*
-                    char[]  t   =   new char[line.length()];
-                    for(int i=0; i< line.length(); i++) {
-                        t[i] =   line.charAt(i);
-                    }
-                    //MainActivity.myTview.setText(t, 0, t.length);
-
-                    //line = "Successful Handoff to 84b2.617e.be76(Channel:44 Score:451 RSSI:-49 dBm Penalty:0) from 84b2.617e.6756(Channel:40 Score:439 RSSI:-61 dBm Penalty:0), Reason 153, Other Aps: 84b2.617e.be76 (Channel:44 Score:451 RSSI:-49 dBm Penalty:0 Reason:140), 84b2.6189.56e6 (Channel:157 Score:442 RSSI:-58 dBm Penalty:0 Reason:140), 84b2.618d.fd96 (Channel:161 Score:432 RSSI:-68 dBm Penalty:0 Reason:140), 84b2.6194.bcd6 (Channel:149 Score:427 RSSI:-73 dBm Penalty:0 Reason:140), TxPO:15 dBm, TxPN:15 dBm";
-                    // check for co-channel interference
-                    try {
-                        String newTarget = "Channel:";
-                        int start = line.indexOf(newTarget) + newTarget.length();
-                        int end = start + 9;
-                        CharSequence csChannel = line.subSequence(start, end);
-                        newChannel = Integer.parseInt(csChannel.subSequence(0, csChannel.toString().indexOf(" ")).toString());
-
-                        String RSSITarget = "RSSI:";
-                        start = line.indexOf(RSSITarget) + RSSITarget.length();
-                        end = start + 9;
-                        CharSequence csRSSI = line.subSequence(start,end);
-                        newRSSI =   Integer.parseInt(csRSSI.subSequence(0, csRSSI.toString().indexOf(" ")).toString());
-
-                        String midTarget = "from";
-                        String midEndTarget = "Reason";
-                        start = line.indexOf(midTarget) + midTarget.length();
-                        end = line.indexOf(midEndTarget);
-                        CharSequence mid = line.subSequence(start, end);
-
-                        String oldTarget = newTarget;
-                        start = mid.toString().indexOf(oldTarget) + oldTarget.length();
-                        end = start + 9;
-                        csChannel = mid.subSequence(start, end);
-                        oldChannel = Integer.parseInt(csChannel.subSequence(0, csChannel.toString().indexOf(" ")).toString());
-
-                        start = mid.toString().indexOf(RSSITarget) + RSSITarget.length();
-                        end = start + 9;
-                        csRSSI = mid.toString().subSequence(start,end);
-                        oldRSSI =   Integer.parseInt(csRSSI.subSequence(0, csRSSI.toString().indexOf(" ")).toString());
-
-                    } catch (Exception e) {
-                        // no problem!
-                    }
-
-
-                    char[] n = intToCharA(newChannel);// {(char) ('0' + (newChannel / 100) % 10), (char) ('0' + (newChannel / 10) % 10), (char) ('0' + newChannel % 10), ' '};
-                    char[] o = intToCharA(oldChannel);// {(char) ('0' + (oldChannel / 100) % 10), (char) ('0' + (oldChannel / 10) % 10), (char) ('0' + oldChannel % 10), ' '};
-                    myToCHview.setText(n,0,n.length);
-                    myFmCHview.setText(o,0,o.length);
-
-                    if (oldChannel == newChannel) {
-                        MainActivity.myToCHview.setBackgroundColor(Color.RED);
-                        MainActivity.myFmCHview.setBackgroundColor(Color.RED);
-                        frozen=true;
-                    } else {
-                        MainActivity.myToCHview.setBackgroundColor(Color.GREEN);
-                        MainActivity.myFmCHview.setBackgroundColor(Color.GREEN);
-                    }
-
-                    char[] oR = intToCharA( oldRSSI );
-                    myFmRSSIview.setText(oR, 0, oR.length);
-
-                    char[] nR = intToCharA( newRSSI );
-                    myToRSSIview.setText(nR, 0, nR.length);
-
-                    */
                     break;
                 }
 
@@ -263,16 +221,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.android.qos.lib.TSPEC_STATUS");
-        //if (changeCount==0) {
-        //    changeCount++;
-        //} else {
-        //    LogEntry newLog = new LogEntry("bogus "+changeCount++);
-        //    customAdapter.add(newLog);
-        //    //if (aLogs.length < 5) {
-        //    //    aLogs[aLogs.length] = "length=" + aLogs.length;
-        //    //    customAdapter.notifyDataSetChanged();
-        //    //}
-        //}
         registerReceiver(receiver, filter);
         super.onResume();
     }
@@ -284,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // negative returns 2 digits and a leading '-', positive returns 3 digits
+    /*
     protected char[] intToCharA(int i)  {
         if (i<0) {
             int r=-i;
@@ -293,70 +242,43 @@ public class MainActivity extends AppCompatActivity {
             char[] p = {(char) ('0' + (i / 100) % 10), (char) ('0' + (i / 10) % 10), (char) ('0' + i % 10), ' '};
             return p;
         }
-        }
+    }
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-/*
-        myTview = (TextView) findViewById(R.id.helloText);
+        myTview = (TextView) findViewById(R.id.title);
+        myIview = (ImageView) findViewById(R.id.icon);
+        myTview2 = (TextView) findViewById(R.id.title2);
+        myTview3 = (TextView) findViewById(R.id.title3);
+        myTview4 = (TextView) findViewById(R.id.title4);
+        myTviewFooter = (TextView) findViewById(R.id.footer);
 
-
+        /*  test code... leave this here
         int oldChannel  = 0;
         int newChannel  = 0;
         int oldRSSI     = 0;
         int newRSSI     = 0;
 
-        String line = "";//"Successful Handoff to 84b2.617e.be76(Channel:44 Score:451 RSSI:-49 dBm Penalty:0) from 84b2.617e.6756(Channel:40 Score:439 RSSI:-61 dBm Penalty:0), Reason 153, Other Aps: 84b2.617e.be76 (Channel:44 Score:451 RSSI:-49 dBm Penalty:0 Reason:140), 84b2.6189.56e6 (Channel:157 Score:442 RSSI:-58 dBm Penalty:0 Reason:140), 84b2.618d.fd96 (Channel:161 Score:432 RSSI:-68 dBm Penalty:0 Reason:140), 84b2.6194.bcd6 (Channel:149 Score:427 RSSI:-73 dBm Penalty:0 Reason:140), TxPO:15 dBm, TxPN:15 dBm";
+        String line = "Successful Handoff to 84b2.617e.be76(Channel:44 Score:451 RSSI:-49 dBm Penalty:0) from 84b2.617e.6756(Channel:40 Score:439 RSSI:-61 dBm Penalty:0), Reason 153, Other Aps: 84b2.617e.be76 (Channel:44 Score:451 RSSI:-49 dBm Penalty:0 Reason:140), 84b2.6189.56e6 (Channel:157 Score:442 RSSI:-58 dBm Penalty:0 Reason:140), 84b2.618d.fd96 (Channel:161 Score:432 RSSI:-68 dBm Penalty:0 Reason:140), 84b2.6194.bcd6 (Channel:149 Score:427 RSSI:-73 dBm Penalty:0 Reason:140), TxPO:15 dBm, TxPN:15 dBm";
         // check for co-channel interference
         try {
-            String newTarget = "Channel:";
-            int start = line.indexOf(newTarget) + newTarget.length();
-            int end = start + 9;
-            CharSequence csChannel = line.subSequence(start, end);
-            newChannel = Integer.parseInt(csChannel.subSequence(0, csChannel.toString().indexOf(" ")).toString());
+            newChannel  =   intSearchNthAfterTarget( line, "Channel:", "", 0);
 
-            String RSSITarget = "RSSI:";
-            start = line.indexOf(RSSITarget) + RSSITarget.length();
-            end = start + 9;
-            CharSequence csRSSI = line.subSequence(start,end);
-            newRSSI =   Integer.parseInt(csRSSI.subSequence(0, csRSSI.toString().indexOf(" ")).toString());
+            newRSSI     =   intSearchNthAfterTarget( line, "RSSI:", "", 0);
 
-            String midTarget = "from";
-            String midEndTarget = "Reason";
-            start = line.indexOf(midTarget) + midTarget.length();
-            end = line.indexOf(midEndTarget);
-            CharSequence mid = line.subSequence(start, end);
+            oldChannel  =   intSearchNthAfterTarget( line, "Channel:", "from", 1);
 
-            String oldTarget = newTarget;
-            start = mid.toString().indexOf(oldTarget) + oldTarget.length();
-            end = start + 9;
-            csChannel = mid.subSequence(start, end);
-            oldChannel = Integer.parseInt(csChannel.subSequence(0, csChannel.toString().indexOf(" ")).toString());
-
-            start = mid.toString().indexOf(RSSITarget) + RSSITarget.length();
-            end = start + 9;
-            csRSSI = mid.toString().subSequence(start,end);
-            oldRSSI =   Integer.parseInt(csRSSI.subSequence(0, csRSSI.toString().indexOf(" ")).toString());
-
+            oldRSSI     =   intSearchNthAfterTarget( line, "RSSI:", "from", 1);
 
         } catch (Exception e) {
             // no problem!
         }
-        char[] n = intToCharA(newChannel);
-        //myToCHview.setText(n, 0, n.length);
+        */
 
-        char[] o = intToCharA(oldChannel);
-        //myFmCHview.setText(o, 0, o.length);
-
-        char[] nR = intToCharA( newRSSI );
-        //myToRSSIview.setText(nR, 0, nR.length);
-
-        char[] oR = intToCharA( oldRSSI );
-        //myFmRSSIview.setText(oR, 0, oR.length);
-*/
         PackageInfo pInfo = null;
         try {
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -368,28 +290,12 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // magic:
-        //setContentView(R.layout.activity_main);
-
-        //ListView lvLogs = (ListView)findViewById(R.id.lvRawLogs);
-        // no good:
-        //ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1 , aLogs);
-        //ArrayAdapter adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1 , aLogs);
-        //lvLogs.setAdapter(adapter);
-
-        //customAdapter = new CustomAdapter();
-        //lvLogs.setAdapter(customAdapter);
-
-
-
-// Create the adapter to convert the array to views
+        // Create the adapter to convert the array to views
         customAdapter = new CustomAdapter(this, aLogs);
 
-
-// Attach the adapter to a ListView
+        // Attach the adapter to a ListView
         ListView listView = (ListView) findViewById(R.id.lvRawLogs);
         listView.setAdapter(customAdapter);
-
 
     }
 
@@ -418,6 +324,7 @@ public class MainActivity extends AppCompatActivity {
             TextView tvAlt2CH = (TextView) convertView.findViewById(R.id.textView_alt2CH);
             TextView tvAlt2RSSI = (TextView) convertView.findViewById(R.id.textView_alt2RSSI);
             TextView tvCCIfault = (TextView) convertView.findViewById(R.id.textView_CCIfault);
+            TextView tvDFSfault = (TextView) convertView.findViewById(R.id.textView_DFSfault);
 
             // Populate the data into the template view using the data object
             tvRawLog.setText(logEntry.rawLog);
@@ -430,43 +337,19 @@ public class MainActivity extends AppCompatActivity {
             tvAlt2CH.setText(logEntry.APalt2CH);
             tvAlt2RSSI.setText(logEntry.APalt2RSSI);
             tvCCIfault.setText(logEntry.faultCoChannelInterference);
+            tvDFSfault.setText(logEntry.faultDFS);
 
             if ( logEntry.anyFault ) {
                 tvRawLog.setBackgroundColor(Color.RED);
             }
-
-            return convertView;
-        }
-
-    }
-
-    /*
-    class CustomAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return aLogs.length;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            convertView = getLayoutInflater().inflate(R.layout.rawlog,null);
-            TextView textView_rawlog = (TextView)convertView.findViewById(R.id.textView_rawlog);
-            textView_rawlog.setText(aLogs[position]);
+            if ( logEntry.DFSfault ) {
+                tvDFSfault.setBackgroundColor(Color.RED);
+            }
+            if ( logEntry.CCIfault ) {
+                tvCCIfault.setBackgroundColor(Color.RED);
+            }
 
             return convertView;
         }
     }
-    */
 }

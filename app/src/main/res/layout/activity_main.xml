@@ -11,19 +11,58 @@
     tools:context="com.slnkfkb.roamon.MainActivity">
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/title"
+        android:layout_centerHorizontal="true"
+        android:text="Roaming Monitor"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
-        android:text=""
-        android:layout_centerHorizontal="true" />
+        android:textSize="24sp" />
 
+    <TextView
+        android:id="@+id/title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true"
+        android:text="Legend:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="18sp" />
 
+    <TextView
+        android:id="@+id/title3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title2"
+        android:layout_centerHorizontal="true"
+        android:text="   CCI = co-channel interference.  A CCIfault occurs if the to and from channels are the same.  Check the MAC address to make sure they are different as this can also be a false positive due to DHCP expiration."
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/title4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title3"
+        android:layout_centerHorizontal="true"
+        android:text="   DFS = dynamic frequency selection.  A DFSfault occurs if a DFS channel is seen with a higher RSSI but not chosen.  This could be due to DFS announcements not set up on the network, or the sub-bands are not properly configured on the phone."
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/footer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/icon"
+        android:layout_centerHorizontal="true"
+        android:text="waiting..."
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textSize="24sp" />
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_launcher"
+        android:id="@+id/icon"
         android:layout_alignParentBottom="true" />
 
     <ListView
@@ -32,6 +71,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/lvRawLogs"
-        android:layout_below="@+id/helloText" />
+        />
 
 </RelativeLayout>
