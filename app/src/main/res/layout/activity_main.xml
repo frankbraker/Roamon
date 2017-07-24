@@ -16,113 +16,22 @@
         android:id="@+id/title"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="18sp"
-        android:text="Roaming Monitor"
+        android:text=""
         android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fromLabel"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
-        android:text="from:"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fromChannel"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
-        android:text="000"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/fromLabel"
-        android:layout_toEndOf="@+id/fromLabel" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/toChannel"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
-        android:text="000"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/toLabel"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
-        android:text=" to:"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/toChannel"
-        android:layout_toStartOf="@+id/toChannel" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fmRSSIlabel"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
-        android:text="RSSI:"
-        android:layout_below="@+id/fromLabel"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fmRSSI"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
-        android:text="000"
-        android:layout_alignBaseline="@+id/fmRSSIlabel"
-        android:layout_alignBottom="@+id/fmRSSIlabel"
-        android:layout_toRightOf="@+id/fmRSSIlabel"
-        android:layout_toEndOf="@+id/fmRSSIlabel" />
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="waiting for roam..."
-        android:id="@+id/helloText"
-        android:layout_below="@+id/fmRSSIlabel"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:textSize="18sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/toRSSI"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
-        android:text="000"
-        android:layout_below="@+id/toChannel"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/toRSSIlabel"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18sp"
-        android:text="RSSI:"
-        android:layout_below="@+id/toLabel"
-        android:layout_toLeftOf="@+id/toRSSI"
-        android:layout_toStartOf="@+id/toRSSI" />
 
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_launcher"
         android:layout_alignParentBottom="true" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/lvRawLogs"
+        android:layout_below="@+id/helloText" />
 
 </RelativeLayout>

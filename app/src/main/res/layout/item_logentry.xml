@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView_CCIfault"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="YES"
+        android:layout_alignBaseline="@+id/faultCCIlabel"
+        android:layout_alignBottom="@+id/faultCCIlabel"
+        android:layout_toRightOf="@+id/faultCCIlabel"
+        android:layout_toEndOf="@+id/faultCCIlabel" />
+
+    <TextView
+        android:id="@+id/textView_toCH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="toCH"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/textView_toRSSI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="toRSSI"
+        android:layout_below="@+id/textView_toCH"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/textView_fmCH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="fmCH"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/alt1RSSIlabel"
+        android:layout_toStartOf="@+id/alt1RSSIlabel" />
+
+    <TextView
+        android:id="@+id/fmCHlabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="from:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="14sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/toCHlabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="to:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="14sp"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/textView_toCH"
+        android:layout_toStartOf="@+id/textView_toCH" />
+
+    <TextView
+        android:id="@+id/toRSSIlabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RSSI:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="14sp"
+        android:layout_alignBaseline="@+id/textView_toRSSI"
+        android:layout_alignBottom="@+id/textView_toRSSI"
+        android:layout_toLeftOf="@+id/textView_toRSSI"
+        android:layout_toStartOf="@+id/textView_toRSSI" />
+
+    <TextView
+        android:id="@+id/alt1CHlabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/fmRSSIlabel"
+        android:text="Alt1:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/alt1RSSIlabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView_alt1CH"
+        android:layout_toEndOf="@+id/textView_alt1CH"
+        android:layout_toRightOf="@+id/textView_alt1CH"
+        android:text="RSSI:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/alt2CHlabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView_alt2CH"
+        android:layout_toLeftOf="@+id/textView_alt2CH"
+        android:layout_toStartOf="@+id/textView_alt2CH"
+        android:text="Alt2:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/faultCCIlabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/textView_fmCH"
+        android:layout_toRightOf="@+id/textView_fmCH"
+        android:text="   CCI fault: "
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/faultDFSlabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="    DFS fault: "
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="14sp"
+        android:layout_alignBaseline="@+id/textView_CCIfault"
+        android:layout_alignBottom="@+id/textView_CCIfault"
+        android:layout_toRightOf="@+id/textView_CCIfault"
+        android:layout_toEndOf="@+id/textView_CCIfault" />
+
+    <TextView
+        android:id="@+id/textView_DFSfault"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/faultDFSlabel"
+        android:layout_alignBottom="@+id/faultDFSlabel"
+        android:layout_toEndOf="@+id/faultDFSlabel"
+        android:layout_toRightOf="@+id/faultDFSlabel"
+        android:text="NO"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/alt2RSSIlabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toRSSIlabel"
+        android:layout_toLeftOf="@+id/textView_alt2RSSI"
+        android:layout_toStartOf="@+id/textView_alt2RSSI"
+        android:text="RSSI:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/fmRSSIlabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/fmCHlabel"
+        android:text="RSSI:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/textView_fmRSSI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="fmRSSI"
+        android:layout_alignBaseline="@+id/fmRSSIlabel"
+        android:layout_alignBottom="@+id/fmRSSIlabel"
+        android:layout_toRightOf="@+id/fmRSSIlabel"
+        android:layout_toEndOf="@+id/fmRSSIlabel" />
+
+    <TextView
+        android:id="@+id/textView_alt1CH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="alt1CH"
+        android:layout_below="@+id/fmRSSIlabel"
+        android:layout_toRightOf="@+id/alt1CHlabel"
+        android:layout_toEndOf="@+id/alt1CHlabel" />
+    <TextView
+        android:id="@+id/textView_alt1RSSI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="alt1RSSI"
+        android:layout_alignTop="@+id/alt1RSSIlabel"
+        android:layout_toRightOf="@+id/alt1RSSIlabel"
+        android:layout_toEndOf="@+id/alt1RSSIlabel" />
+    <TextView
+        android:id="@+id/textView_alt2CH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="alt2CH"
+        android:layout_alignTop="@+id/alt2RSSIlabel"
+        android:layout_toLeftOf="@+id/alt2RSSIlabel"
+        android:layout_toStartOf="@+id/alt2RSSIlabel" />
+    <TextView
+        android:id="@+id/textView_alt2RSSI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="alt2RSSI"
+        android:layout_below="@+id/toRSSIlabel"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/textView_rawlog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RawLog"
+        android:textSize="12sp"
+        android:layout_below="@+id/alt1CHlabel"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>
